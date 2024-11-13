@@ -1,0 +1,466 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+:root {
+  --bg: #fbf8ef;
+  --darkGrey: #776c66;
+  --lightGrey: #bbada0;
+  --newGameBtnBg: #8f7a65;
+  --tileBg: #cdc1b3;
+
+  --bg2: #eee4da;
+  --bg4: #ece0c8;
+  --bg8: #f2b179;
+  --bg16: #f59563;
+  --bg32: #f57c5f;
+  --bg64: #f65e3b;
+  --bg128: #edcf72;
+  --bg256: #edcc61;
+  --bg512: #edc850;
+  --bg1024: #edc43d;
+  --bg2048: #fa25d2;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: Inter;
+  font-weight: 900;
+}
+
+h1 {
+  color: var(--darkGrey);
+  font-size: 3.5rem;
+  font-weight: 800;
+}
+@media screen and (max-width: 400px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+}
+
+/* unique */
+
+dialog {
+  display: block;
+  position: absolute;
+  max-width: 600px;
+  margin: auto;
+  inset: 0;
+  /* transition */
+  transform: translateY(-100px);
+  opacity: 0;
+  /* transition end */
+  transition: all 350ms ease-in-out 150ms;
+  pointer-events: none;
+}
+dialog[open] {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+dialog.closed {
+  transform: translateY(-100px);
+  opacity: 0;
+}
+dialog h2 {
+  padding-bottom: 1rem;
+}
+dialog p {
+  font-weight: 400;
+  line-height: 150%;
+}
+dialog button {
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  background-color: var(--darkGrey);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: transform 80ms ease-in-out;
+}
+dialog button:hover {
+  transform: translateY(-4px);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.198);
+}
+dialog dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  min-height: 100dvh;
+  background-color: var(--bg);
+}
+
+main {
+  width: clamp(330px, 100%, 650px);
+  position: relative;
+  padding-inline: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 1.5rem;
+}
+
+.scoreWrapper {
+  display: flex;
+  align-items: flex-start;
+  align-self: flex-start;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.scoreGroup,
+.bestGroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem 2rem;
+  background-color: var(--lightGrey);
+  row-gap: 0.2rem;
+}
+@media screen and (max-width: 475px) {
+  .scoreGroup,
+  .bestGroup {
+    padding: 0.2rem 0.75rem;
+  }
+}
+@media screen and (max-width: 375px) {
+  .scoreGroup,
+  .bestGroup {
+    padding: 0.2rem 0.4rem;
+  }
+}
+.scoreGroup > h3,
+.scoreWrapper h3 {
+  color: white;
+  font-weight: 300;
+  font-size: 1rem;
+  text-align: center;
+}
+.scoreGroup > p,
+.scoreWrapper p {
+  color: white;
+  font-weight: 800;
+  font-size: 1.5rem;
+  padding: 0;
+  text-align: center;
+}
+
+.descRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-block: 1rem;
+  column-gap: 2rem;
+}
+.descRow p {
+  font-family: 1.2rem;
+  font-weight: 400;
+  color: var(--darkGrey);
+}
+.newGameBtn {
+  background-color: var(--newGameBtnBg);
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+  color: white;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: transform 100ms ease-in-out;
+}
+.newGameBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.board {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1/1;
+  padding: 1rem;
+  border-radius: 6px;
+  background-color: var(--lightGrey);
+  grid-template-columns: repeat(4, minmax(5ch, 1fr));
+  grid-template-rows: repeat(4, minmax(5ch, 1fr));
+  gap: 1rem;
+  transition: filter 500ms ease-in-out 100ms;
+}
+@media screen and (max-width: 370px) {
+  .board {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+.dimBoard {
+  filter: brightness(0.6);
+}
+
+.boardSquare {
+  background-color: var(--tileBg);
+  border-radius: 12px;
+}
+
+.activeSquare {
+  position: relative;
+  font-size: 3rem;
+  font-weight: 800;
+  border-radius: 12px;
+  display: grid;
+  place-content: center;
+  color: white;
+  transition: all 150ms linear;
+  /* allows sliding */
+  inset: 0;
+}
+
+@media screen and (max-width: 600px) {
+  .activeSquare {
+    font-size: 2.7rem;
+  }
+  .activeSquare.tile-1024,
+  .activeSquare.tile-1024 {
+    font-size: 2.4rem;
+  }
+}
+@media screen and (max-width: 560px) {
+  .activeSquare {
+    font-size: 2.5rem;
+  }
+  .activeSquare.tile-1024,
+  .activeSquare.tile-1024 {
+    font-size: 2.1rem;
+  }
+}
+@media screen and (max-width: 480px) {
+  .activeSquare {
+    font-size: 2rem;
+  }
+  .activeSquare.tile-1024,
+  .activeSquare.tile-1024 {
+    font-size: 1.6rem;
+  }
+}
+
+.grow {
+  animation: grow 150ms ease-in-out 100ms;
+}
+@keyframes grow {
+  50% {
+    scale: 1.2;
+  }
+}
+.grow-lg {
+  animation: grow-lg 500ms ease-in-out 100ms;
+}
+@keyframes grow-lg {
+  50% {
+    scale: 1.3;
+  }
+}
+
+.winBanner,
+.loseBanner {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  color: white;
+  font-weight: 700;
+  border-radius: 20px;
+  background-color: var(--newGameBtnBg);
+  width: 250px;
+  height: 125px;
+  z-index: 3;
+  inset: 0;
+  margin: auto;
+  transition: transform 1000ms ease-in-out, opacity 1000ms ease-in-out;
+}
+.bannerFadeInPulse {
+  animation: fadeIn 1500ms 100ms ease-in-out forwards, grow 3000ms 1600ms ease-in-out 2;
+  opacity: 0;
+}
+.bannerFadeIn {
+  opacity: 0;
+  animation: fadeIn 1500ms 100ms ease-in-out forwards;
+}
+.bannerFadeOut {
+  transform: translateY(100px) scale(1);
+  opacity: 0;
+}
+@keyframes fadeIn {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+.winBanner button,
+.loseBanner button {
+  font-size: 1rem;
+  display: grid;
+  place-content: center;
+  position: absolute;
+  width: 40px;
+  top: -10px;
+  right: -10px;
+  background-color: white;
+  color: var(--newGameBtnBg);
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  border: 4px solid var(--newGameBtnBg);
+  cursor: pointer;
+}
+.winBanner h2 {
+  font-size: 3.5rem;
+  background: linear-gradient(
+    to right,
+    orange,
+    yellow,
+    rgb(0, 255, 0),
+    cyan,
+    violet,
+    cyan,
+    rgb(0, 255, 0),
+    yellow,
+    orange
+  );
+  -webkit-background-clip: text;
+  background-size: 800px;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: bgSlide 4000ms 3100ms linear infinite alternate;
+}
+.loseBanner h2 {
+  font-size: 2.5rem;
+}
+
+@keyframes bgSlide {
+  100% {
+    background-position: 100%;
+  }
+}
+
+.tile-2 {
+  background-color: var(--bg2);
+  color: var(--darkGrey);
+}
+.tile-4 {
+  background-color: var(--bg4);
+  color: var(--darkGrey);
+}
+.tile-8 {
+  background-color: var(--bg8);
+}
+.tile-16 {
+  background-color: var(--bg16);
+}
+.tile-32 {
+  background-color: var(--bg32);
+}
+.tile-64 {
+  background-color: var(--bg64);
+}
+.tile-128 {
+  background-color: var(--bg128);
+}
+.tile-256 {
+  background-color: var(--bg256);
+}
+.tile-512 {
+  background-color: var(--bg512);
+}
+.tile-1024 {
+  background-color: var(--bg1024);
+}
+.tile-2048 {
+  background-color: var(--bg2048);
+}
+
+/* board tiles */
+/* 
+doing it this way because I have seen there is a npm package that allows grid-row and grid-column transition, but it requires that classes be removed/added to transition correctly 
+*/
+/* first row */
+.loc-0-0 {
+  grid-row: 1 / span 1;
+  grid-column: 1 / span 1;
+}
+.loc-0-1 {
+  grid-row: 1 / span 1;
+  grid-column: 2 / span 1;
+}
+.loc-0-2 {
+  grid-row: 1 / span 1;
+  grid-column: 3 / span 1;
+}
+.loc-0-3 {
+  grid-row: 1 / span 1;
+  grid-column: 4 / span 1;
+}
+/* second row */
+.loc-1-0 {
+  grid-row: 2 / span 1;
+  grid-column: 1 / span 1;
+}
+.loc-1-1 {
+  grid-row: 2 / span 1;
+  grid-column: 2 / span 1;
+}
+.loc-1-2 {
+  grid-row: 2 / span 1;
+  grid-column: 3 / span 1;
+}
+.loc-1-3 {
+  grid-row: 2 / span 1;
+  grid-column: 4 / span 1;
+}
+/* third row */
+.loc-2-0 {
+  grid-row: 3 / span 1;
+  grid-column: 1 / span 1;
+}
+.loc-2-1 {
+  grid-row: 3 / span 1;
+  grid-column: 2 / span 1;
+}
+.loc-2-2 {
+  grid-row: 3 / span 1;
+  grid-column: 3 / span 1;
+}
+.loc-2-3 {
+  grid-row: 3 / span 1;
+  grid-column: 4 / span 1;
+}
+/* fourth row */
+.loc-3-0 {
+  grid-row: 4 / span 1;
+  grid-column: 1 / span 1;
+}
+.loc-3-1 {
+  grid-row: 4 / span 1;
+  grid-column: 2 / span 1;
+}
+.loc-3-2 {
+  grid-row: 4 / span 1;
+  grid-column: 3 / span 1;
+}
+.loc-3-3 {
+  grid-row: 4 / span 1;
+  grid-column: 4 / span 1;
+}

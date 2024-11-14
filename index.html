@@ -59,7 +59,9 @@
 
         // configure 'New Game' button
         document.querySelector(".newGameBtn").addEventListener("click", () => {
-          game.startNewGame();
+          document.querySelector(".winBanner button")?.click();
+          document.querySelector(".loseBanner button")?.click();
+          // game.startNewGame();
         });
 
         // desktop user with keys

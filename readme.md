@@ -4,6 +4,9 @@
 
 This repository contains my final exam project for a class on jQuery at Purdue University. It is a mock implementation of the popular 2048 game, created using JavaScript classes to handle the game logic and interactions along with jQuery for browser manipulation.
 
+## Updates
+- Added TypeScript to Game object for type saftey!
+
 ## Features
 
 - Full implementation of 2048 gameplay mechanics.

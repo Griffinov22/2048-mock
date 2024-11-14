@@ -1,4 +1,8 @@
 class Game {
+  board: Array<number[]>;
+  isPlaying: Boolean;
+  score: number;
+
   constructor() {
     this.board = [
       [0, 0, 0, 0],
@@ -10,7 +14,7 @@ class Game {
     this.score = 0;
   }
 
-  addRandomTile = () => {
+  addRandomTile = (): void => {
     const randomSpotGenerator = () => Math.floor(Math.random() * 4);
     let x;
     let y;
@@ -27,7 +31,10 @@ class Game {
     this.renderChanges();
   };
 
-  placeTileOnBoard = (amount, { x, y }) => {
+  placeTileOnBoard = (
+    amount: number,
+    { x, y }: { x: string | number; y: string | number }
+  ): void => {
     const tile = document.createElement("div");
     // background tile
     // tile-number   -> used for background colors
@@ -39,13 +46,13 @@ class Game {
     }
 
     if (amount != 0) {
-      tile.innerHTML = amount;
-      tile.setAttribute("data-amount", amount);
+      tile.innerHTML = String(amount);
+      tile.setAttribute("data-amount", String(amount));
     }
     document.querySelector(".board").insertAdjacentElement("beforeend", tile);
   };
 
-  checkWin = () => {
+  checkWin = (): Boolean => {
     if (this.board.flat().includes(2048)) {
       this.renderEndScoreChanges();
 
@@ -55,7 +62,7 @@ class Game {
     return false;
   };
 
-  checkLoss = () => {
+  checkLoss = (): Boolean => {
     let isLoss = false;
     if (this.board.flat().includes(0)) return false;
 
@@ -72,7 +79,8 @@ class Game {
       // end checking horizontal matches
       for (let y = 0; y < this.board[x].length; y++) {
         // check if there are any matches vertically that can be made
-        if (this.board[y + 1] != undefined && this.board[y][x] == this.board[y + 1][x]) return false;
+        if (this.board[y + 1] != undefined && this.board[y][x] == this.board[y + 1][x])
+          return false;
       }
     }
 
@@ -83,14 +91,14 @@ class Game {
     return true;
   };
 
-  renderChanges = () => {
+  renderChanges = (): void => {
     document
       .querySelector(".board")
       .querySelectorAll(".activeSquare, .boardSquare, .targetSquare")
       .forEach((el) => el.remove());
 
     // update score
-    document.querySelector(".score").textContent = this.score;
+    document.querySelector(".score").textContent = String(this.score);
 
     for (let x = 0; x < this.board.length; x++) {
       for (let y = 0; y < this.board[0].length; y++) {
@@ -103,26 +111,26 @@ class Game {
     }
   };
 
-  renderEndScoreChanges = () => {
+  renderEndScoreChanges = (): void => {
     const bestScore = localStorage.getItem("bestScore");
     if (!bestScore) {
-      localStorage.setItem("bestScore", this.score);
+      localStorage.setItem("bestScore", String(this.score));
       const bestHtml = document.querySelector(".best");
-      bestHtml.textContent = this.score;
+      bestHtml.textContent = String(this.score);
       bestHtml.classList.add("grow-lg");
       setTimeout(() => {
         bestHtml.classList.remove("grow-lg");
       }, 100);
     } else if (Number(bestScore) < this.score) {
-      document.querySelector(".best").textContent = this.score;
-      localStorage.setItem("bestScore", this.score);
+      document.querySelector(".best").textContent = String(this.score);
+      localStorage.setItem("bestScore", String(this.score));
     }
 
     const board = document.querySelector(".board");
     board.classList.add("dimBoard");
   };
 
-  startNewGame = () => {
+  startNewGame = (): void => {
     const isFirstGame = this.board.flat().every((x) => x == 0);
 
     if (!isFirstGame) {
@@ -138,13 +146,13 @@ class Game {
 
     this.isPlaying = true;
     this.score = 0;
-    document.querySelector(".score").textContent = 0;
+    document.querySelector(".score").textContent = "0";
     // add first tile
     this.addRandomTile();
     this.addRandomTile();
   };
 
-  moveRight = () => {
+  moveRight = (): void => {
     if (!this.isPlaying) return;
     // just need to worry about horizontal
     for (let i = 0; i < this.board.length; i++) {
@@ -212,7 +220,7 @@ class Game {
     this.renderChanges();
   };
 
-  moveUp = () => {
+  moveUp = (): void => {
     if (!this.isPlaying) return;
     // need to think about columns instead of rows
     // iterate over columns
@@ -249,7 +257,7 @@ class Game {
     this.renderChanges();
   };
 
-  moveDown = () => {
+  moveDown = (): void => {
     if (!this.isPlaying) return;
     // need to think about columns instead of rows
     // iterate over columns
